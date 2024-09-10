@@ -31,33 +31,39 @@ class ProxyController extends AbstractController
         $this->httpClient = $httpClient;
     }
 
-    
+
     #[Route('/proxy/{path}', name: 'app_proxy', requirements: ['path' => '.+'], methods: ['GET', 'POST', 'OPTIONS'])]
     public function proxy(Request $request, $path): Response
     {
 
-        $url = 'https://api.genius.com/' . $path;
+        $authentication = new \Http\Message\Authentication\Bearer('CnPz5ovm0Edk047z65SzUYLdfQhOiSnaqdKXSWkLO0Yz9_Ysi-er6HoBTGplAiJ5');
 
-        $options = [
-            'headers' => [
-                'Authorization' => 'Bearer D-xLrZWn3c7l05f96fMMvenZEvF7Q9rqrFMgcmbbL0Vf1fPS8z7-wvLQa5NXm9j0', // Remplace par ton token
-                'Content-Type' => 'application/json',
-                'Origin' => $request->headers->get('Origin'),
-                'Accept' => 'application/json',
-            ],
-            'query' => $request->query->all(),
-        ];
+        $genius = new \Genius\Genius($authentication);
+        $upvoteAnnotation = $genius->getAnnotationsResource();
+        dd($upvoteAnnotation);
 
-        $response = $this->httpClient->request(
-            $request->getMethod(),
-            $url,
-            $options
-        );
+        // $url = 'https://api.genius.com/' . $path;
 
-        return new Response(
-            $response->getContent(),
-            $response->getStatusCode(),
-            ['Content-Type' => $response->getHeaders(false)['content-type'][0] ?? 'application/json']
-        );
+        // $options = [
+        //     'headers' => [
+        //         'Authorization' => 'Bearer CnPz5ovm0Edk047z65SzUYLdfQhOiSnaqdKXSWkLO0Yz9_Ysi-er6HoBTGplAiJ5', // Remplace par ton token
+        //         'Content-Type' => 'application/json',
+        //         'Origin' => $request->headers->get('Origin'),
+        //         'Accept' => 'application/json',
+        //     ],
+        //     'query' => $request->query->all(),
+        // ];
+
+        // $response = $this->httpClient->request(
+        //     $request->getMethod(),
+        //     $url,
+        //     $options
+        // );
+
+        // return new Response(
+        //     $response->getContent(),
+        //     $response->getStatusCode(),
+        //     ['Content-Type' => $response->getHeaders(false)['content-type'][0] ?? 'application/json']
+        // );
     }
 }
